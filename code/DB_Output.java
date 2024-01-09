@@ -1,4 +1,4 @@
-package code;
+package basic_logger.code;
 
 public class DB_Output {
 

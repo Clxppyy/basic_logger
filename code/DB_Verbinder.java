@@ -1,4 +1,4 @@
-package code;
+package basic_logger.code;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -12,15 +12,15 @@ import javax.swing.JOptionPane;
 public class DB_Verbinder {
 
     /*Verzeichnis, wo die Datenbank gespeichert ist/werden soll.
-    * Wichtig: In der Schule muss dies im HOME-Verzeichnis des Benutzers sein!
-    * SQLite-Datenbanken müssen in der Schule im Benutzer-Hauptverzeichnis gespeichert werden,
+    * Wichtig: Datenbank IM HOME-Verzeichnis des Benutzers sein (speziell für Linux)!
+    * SQLite-Datenbanken müssen im Benutzer-Hauptverzeichnis gespeichert werden,
     * _nicht_ unter Files oder Groups! Ansonsten kann nicht gespeichert werden.
     * Die Dateinen selbst können dann aber in Files oder Groups gesichert werden.
-     --> Schule: System.getProperty("user.home") + System.getProperty("file.separator");
+     System.getProperty("user.home") + System.getProperty("file.separator");
      */
     public static final String SQLITEVZ = System.getProperty("user.home") + System.getProperty("file.separator");
     // Name der Datenbankdatei
-    public static final String SQLITEDB = "Handys.sqlite";
+    public static final String SQLITEDB = "logger.sqlite";
 /*
     private final JFrame parent;
 
@@ -40,7 +40,7 @@ public class DB_Verbinder {
         return DB_Verbinder.SQLITEDB;
     }
     
-        private boolean dbIsFilled() {
+    public boolean dbIsFilled() {
         try {
             Statement sql = getConnectionToActualDB().createStatement();
 
@@ -112,7 +112,7 @@ public class DB_Verbinder {
             DB_Output.myDebug("######## DB-Verbindung konnte NICHT geschlossen werden! ########\n" + ex.getLocalizedMessage());
         }
     }
-    
+
 /**
         // Prüft, ob die Datenbankdatei existiert.
         if (!dbIsFilled()) {
@@ -140,7 +140,6 @@ public class DB_Verbinder {
 
         return dbtest;
     }
-**/     
     
 /**
  * 

@@ -1,4 +1,4 @@
-package code;
+package basic_logger.code;
 
 import java.sql.*;
 import java.util.ArrayList;
