@@ -20,7 +20,7 @@ public class DB_Verbinder {
      */
     public static final String SQLITEVZ = System.getProperty("user.home") + System.getProperty("file.separator");
     // Name der Datenbankdatei
-    public static final String SQLITEDB = "logger.sqlite";
+    public static final String SQLITEDB = "db_logger.sqlite";
 /*
     private final JFrame parent;
 
@@ -39,29 +39,7 @@ public class DB_Verbinder {
     public static String getSQLITEDB() {
         return DB_Verbinder.SQLITEDB;
     }
-    
-    public boolean dbIsFilled() {
-        try {
-            Statement sql = getConnectionToActualDB().createStatement();
 
-            sqlAnfrage = "SELECT name FROM namen";
-
-            // falls die Abfrage fehlschlägt, wird eine SQLException ausgelöst
-            ResultSet ergebnis = sql.executeQuery(sqlAnfrage);
-
-            ergebnis.close();
-            return true;
-        } catch (SQLException ex) {
-            DB_Output.myDebug("Datenbank ist leer!");
-            return false;
-        }
-
-    }
-        /**
-     * Gibt den Namen der aktuell aktiven Datenbank zurück.
-     *
-     * @return Namen der aktiven DB
-     */
     public String getActualDBName() {
         return dbname;
     }
@@ -79,7 +57,7 @@ public class DB_Verbinder {
      *
      * @param verzeichnis - Verzeichnis, in dem die DB-Datei gespeichert ist.
      * @param dbname - Name der Datenbank
-     * @return wahr oder falsch
+     * @return - wahr oder falsch
      *
      */
     public synchronized boolean db_open(String verzeichnis, String dbname) {
@@ -112,6 +90,26 @@ public class DB_Verbinder {
             DB_Output.myDebug("######## DB-Verbindung konnte NICHT geschlossen werden! ########\n" + ex.getLocalizedMessage());
         }
     }
+
+
+//    public boolean dbIsFilled() {
+//        try {
+//            Statement sql = getConnectionToActualDB().createStatement();
+//
+//            sqlAnfrage = "SELECT name FROM namen";
+//
+//            // falls die Abfrage fehlschlägt, wird eine SQLException ausgelöst
+//            ResultSet ergebnis = sql.executeQuery(sqlAnfrage);
+//
+//            ergebnis.close();
+//            return true;
+//        } catch (SQLException ex) {
+//            DB_Output.myDebug("Datenbank ist leer!");
+//            return false;
+//        }
+//
+//    }
+
 
 /**
         // Prüft, ob die Datenbankdatei existiert.
