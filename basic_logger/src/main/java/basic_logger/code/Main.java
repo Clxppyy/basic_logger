@@ -20,7 +20,7 @@ public class Main {
 
     public static void main(String[] args) {
         /*CHECKPOINT, you have to type in your own directory of your own database --> */
-        if(gateOpener.db_open("C:\\Users\\Clxppy\\IdeaProjects\\basic_logger\\src\\main\\java\\basic_logger", "db_logger.db")){
+        if(gateOpener.db_open("C:\\Users\\Clxppy\\IdeaProjects\\basic_logger", "db_logger.db")){
             /*AVOIDABLE,  from here on now the logging process is of course your thing to do.*/
             System.out.println("'L' for login / 'C' for creating new profile / 'E' for exit");
             boolean lever = true;
@@ -91,5 +91,3 @@ public class Main {
         }
     }
 }
-
-

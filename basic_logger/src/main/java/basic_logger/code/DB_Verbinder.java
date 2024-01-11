@@ -48,7 +48,7 @@ public class DB_Verbinder {
             }
             DB_Output.myDebug("Database closed!");
         } catch (SQLException ex) {
-            DB_Output.myDebug("######## DB-connection failed to close! ########\n" + ex.getLocalizedMessage());
+            DB_Output.myDebug("DB-connection failed to close! " + ex.getLocalizedMessage());
         }
     }
 }
