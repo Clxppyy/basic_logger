@@ -3,6 +3,9 @@ package basic_logger.code;
 import org.mindrot.jbcrypt.BCrypt;
 
 import java.util.Scanner;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * IMPORTANT NOTE FROM THE AUTHOR Clxppy: Generally speaking: As you use this code you'll probably change it.
@@ -13,7 +16,13 @@ import java.util.Scanner;
  * "CHECKPOINT" for MUST changes, "AVOIDABLE" for INDIVIDUAL changes.
  */
 
-public class Main {
+public abstract class Main implements ExecutorService {
+
+    static String parameter;
+
+    public Main(String parameter){
+        Main.parameter = parameter;
+    }
 
     static DB_Verbinder gateOpener = new DB_Verbinder();
     static Scanner scan = new Scanner(System.in);
@@ -27,16 +36,15 @@ public class Main {
             while(lever){
                 switch (scan.nextLine()) {
                     case "L" -> {
-                        loginUser();
-                        lever = false;
+                        //lever = false means the user wants to log in
+                        organize(lever = false);
                     }
                     case "C" -> {
-                        createUser();
-                        lever = false;
+                        //lever = true means a new profile shall be created
+                        organize(true);
                     }
                     case "E" -> {
                         exitProgram();
-                        lever = false;
                     }
                     default -> System.out.println("That isn't a valid input. Please retry:");
                 }
@@ -52,41 +60,47 @@ public class Main {
         System.exit(1);
     }
 
-    static void loginUser(){
+    static void organize(Boolean lever){
+        ExecutorService executor = Executors.newSingleThreadExecutor();
         System.out.println("Enter a username:");
-        String username = scan.nextLine();
-        System.out.println("Enter the belonging password:");
-        String password = scan.nextLine();
-        hashToDB(true , username, password);
-    }
-
-    static void createUser(){
-        System.out.println("Enter a username:");
-        String username = scan.nextLine();
+        AtomicReference<String> username = new AtomicReference<>(scan.nextLine());
+        executor.execute(() -> username.set(encryptInput(username.get())));
         System.out.println("Enter a password:");
-        String password = scan.nextLine();
-        hashToDB(false , username, password);
+        AtomicReference<String> password = new AtomicReference<>(scan.nextLine());
+        executor.execute(() -> password.set(encryptInput(password.get())));
+        //lever = false means the user wants to log in
+        //lever = true means a new profile shall be created
+        ToDB(lever || !executor.isTerminated(), username.get(), password.get());
     }
 
-    static void hashToDB(boolean lever, String key_username, String key_password) {
+    static String encryptInput(String input){
         //Copyright (c) 2006 Damien Miller <djm@mindrot.org>
-        String hashed_username = BCrypt.hashpw(key_username, BCrypt.gensalt(15));
-        String hashed_password = BCrypt.hashpw(key_password, BCrypt.gensalt(15));
+        return BCrypt.hashpw(input, BCrypt.gensalt(15));
+    }
+
+    static void ToDB(boolean lever, String key_username, String key_password) {
         DB_Anfragen opener = new DB_Anfragen();
-        if(lever){
-            if(opener.getUsername(hashed_username) && opener.getPassword(hashed_password)){
+
+        //Maybe change to recursion
+        
+        if(!lever){
+            //lever = false means the user wants to log in
+            if(opener.getUsername(key_username) && opener.getPassword(key_password)){
                 System.out.println("Login successful!");
             }
             else {
-                System.out.println("Your credentials are not valid.");
+                System.out.println("### Your credentials are not valid. ###");
+                exitProgram();
             }
         }
         else {
-            if(opener.insertUsername(hashed_username) && opener.insertPassword(hashed_password)){
+            //lever = true means a new profile shall be created
+            if(opener.insertUsername(key_username) && opener.insertPassword(key_password)){
                 System.out.println("Profile successfully created!");
             }
             else {
-                System.out.println("This username is unfortunately already used. Retry with a different one.");
+                System.out.println("### This username is unfortunately already used. Retry with a different one. ###");
+                exitProgram();
             }
         }
     }
