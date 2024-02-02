@@ -63,24 +63,31 @@ public abstract class Main implements ExecutorService {
     static void organize(Boolean lever){
         ExecutorService executor = Executors.newSingleThreadExecutor();
         System.out.println("Enter a username:");
-        AtomicReference<String> username = new AtomicReference<>(scan.nextLine());
-        executor.execute(() -> username.set(encryptInput(username.get())));
+        String username = scan.nextLine();
+        executor.execute(() -> encryptInput(username));
         System.out.println("Enter a password:");
-        AtomicReference<String> password = new AtomicReference<>(scan.nextLine());
-        executor.execute(() -> password.set(encryptInput(password.get())));
-        //lever = false means the user wants to log in
-        //lever = true means a new profile shall be created
-        if(!lever && executor.isTerminated()){
-            ToDB(lever, username, password);
-        }
-        else{
-
+        String password = scan.nextLine();
+        executor.execute(() -> encryptInput(password));
+        executor.shutdown();
+        while(executor.isTerminated()){
+            if(!lever){
+                //lever = false means the user wants to log in
+                ToDB(lever, username, password);
+                break;
+            }
+            else {
+                //lever = true means a new profile shall be created
+                ToDB(lever, username, password);
+                break;
+            }
         }
     }
 
     static String encryptInput(String input){
         //Copyright (c) 2006 Damien Miller <djm@mindrot.org>
-        return BCrypt.hashpw(input, BCrypt.gensalt(15));
+        String hashed = BCrypt.hashpw(input, BCrypt.gensalt(15));
+        System.out.println(hashed);
+        return hashed;
     }
 
     static void ToDB(boolean lever, String key_username, String key_password) {
